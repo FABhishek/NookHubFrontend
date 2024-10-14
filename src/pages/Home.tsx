@@ -1,5 +1,6 @@
 import "./Home.css";
 import React, { useState } from 'react';
+import axios from "axios";
 
 export default function Home(){
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +24,21 @@ export default function Home(){
     const handleSubmit = (e:any) => {
         e.preventDefault();
         console.log("Form Data Submitted:", formData);
+
+        axios.post('http://localhost:8080/api/v1/users/register', formData)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
         closeModal();
+        setFormData({
+            username: '',
+            email: '',
+            password: ''
+        });
     };
 
     return(
@@ -36,7 +51,7 @@ export default function Home(){
 
             {isModalOpen && (
                 <div className="modal-overlay" onClick={closeModal}>
-                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                    <div className="modal-content bg-zinc-800" onClick={e => e.stopPropagation()}>
                         <h1 className="signUp">Sign Up</h1>
                         <form>
                             <div className="form-group">
@@ -60,7 +75,6 @@ export default function Home(){
                     </div>
                 </div>
             )}
-
         </div>
     )
 }
