@@ -12,6 +12,11 @@
   color: black;
   color:rgb(249, 244, 201);
   background-color: rgb(149, 149, 149);
+  background-image: url('./src/images/home_hero_desktop.2632cca0.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 200%;
+  background-position: center 0%;
 }
 
 

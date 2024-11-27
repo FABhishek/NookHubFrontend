@@ -1,5 +1,5 @@
 import "./Home.css";
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from "axios";
 
 export default function Home(){
@@ -51,7 +51,7 @@ export default function Home(){
 
             {isModalOpen && (
                 <div className="modal-overlay" onClick={closeModal}>
-                    <div className="modal-content bg-zinc-800" onClick={e => e.stopPropagation()}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
                         <h1 className="signUp">Sign Up</h1>
                         <form>
                             <div className="form-group">
