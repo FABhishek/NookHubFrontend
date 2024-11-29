@@ -44,7 +44,7 @@
   .performButtons {
     display: flex; /* Use flexbox for alignment */
     justify-content: space-between; /* Push buttons to opposite ends */
-    width: 80%; /* Align with input fields' width */
+    width: 100%; /* Align with input fields' width */
     margin-top: 30px; /* Add spacing above the buttons */
   }
   
@@ -65,7 +65,7 @@
   }
   
   .submit-button {
-    background-color: #1976d2; /* Blue color for submit */
+    background-color: lightgreen; /* Blue color for submit */
     color: white; /* White text */
     border: none; /* Remove border */
   }
@@ -76,7 +76,7 @@
   }
   
   .submit-button:hover {
-    background-color: #1565c0; /* Darker blue on hover */
+    background-color: green; /* Darker blue on hover */
   }
   
   /* Error Messages */

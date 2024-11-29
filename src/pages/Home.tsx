@@ -22,12 +22,18 @@ export default function Home() {
     "Please fill all the fields before submitting."
   );
   const [userNameError, setUserNameError] = useState("");
-  const [userEmailError, setEmailError] = useState("");
+  const [isPasswordValid, setIsPasswordValid] = useState("");
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
     setUserNameError("");
+    setIsPasswordValid("");
+    setFormData({
+      username: "",
+      email: "",
+      password: "",
+    });
   };
 
   // callbacks
@@ -61,12 +67,17 @@ export default function Home() {
     }
   };
 
-  const validateEmail = (email: any) => {
-    if (email.length > 50) {
-      setEmailError("Email length should not more than 50.");
+  const ValidatePassword = (data: string) => {
+    const pattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{}|;:'",.<>?/`~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{}|;:'",.<>?/`~]{8,20}$/;
+
+    if (!pattern.test(data)) {
+      setIsPasswordValid(
+        "Password must be 8–20 characters with at least one uppercase, one lowercase, one number, and one special character."
+      );
       return false;
     } else {
-      setEmailError("");
+      setIsPasswordValid("");
       return true;
     }
   };
@@ -77,7 +88,10 @@ export default function Home() {
 
     //validating data first.
     //validateUserName(formData.username);
-    if (validateUserName(formData.username)) {
+    if (
+      validateUserName(formData.username) &&
+      ValidatePassword(formData.password)
+    ) {
       axios
         .post("http://localhost:8080/api/v1/users/register", formData)
         .then((response) => {
@@ -151,6 +165,7 @@ export default function Home() {
             required
             onChange={(e) => onChange(e)}
           />
+          {isPasswordValid && <span className="error">{isPasswordValid}</span>}
           <div className="performButtons">
             <Button
               className="close-button"
