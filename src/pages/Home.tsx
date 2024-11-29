@@ -165,63 +165,6 @@ export default function Home() {
           </div>
         </form>
       </Dialog>
-
-      {/* {isModalOpen && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h1 className="signUp">Sign Up</h1>
-            <form>
-              <div className="form-group">
-                <span>Username</span>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  required
-                  onChange={(e) => onChange(e)}
-                />
-              </div>
-              {userNameError.length > 0 && (
-                <span className="error">{userNameError}</span>
-              )}
-              <div className="form-group">
-                <span>Email</span>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  onChange={(e) => onChange(e)}
-                />
-              </div>
-              <div className="form-group">
-                <span>Password</span>
-                <input
-                  type="password"
-                  id="password"
-                  name="password"
-                  required
-                  onChange={(e) => onChange(e)}
-                />
-              </div>
-              <div className="d-flex">
-                <button className="close-button" onClick={closeModal}>
-                  Close
-                </button>
-                <button
-                  type="submit"
-                  disabled={!isFormFilled}
-                  className="submit-button"
-                  onClick={handleSubmit}
-                  title={notFilledError}
-                >
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }
