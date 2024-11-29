@@ -1,14 +1,7 @@
 import "./Home.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Button,
-  TextField,
-  Box,
-  Dialog,
-  DialogContent,
-  DialogActions,
-} from "@mui/material";
+import { Button, TextField, Dialog } from "@mui/material";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,10 +10,6 @@ export default function Home() {
     email: "",
     password: "",
   });
-  const [isFormFilled, setIsFormFilled] = useState(false);
-  const [notFilledError, setNotFilledError] = useState(
-    "Please fill all the fields before submitting."
-  );
   const [userNameError, setUserNameError] = useState("");
   const [isPasswordValid, setIsPasswordValid] = useState("");
 
@@ -109,21 +98,6 @@ export default function Home() {
       });
     }
   };
-
-  //UseEffects
-  useEffect(() => {
-    if (
-      formData.email != "" &&
-      formData.password != "" &&
-      formData.username != ""
-    ) {
-      setIsFormFilled(true);
-      setNotFilledError("");
-    } else {
-      setIsFormFilled(false);
-      setNotFilledError("Please fill all the fields before submitting.");
-    }
-  }, [formData]);
 
   return (
     <div>
