@@ -1,80 +1,156 @@
 import "./Home.css";
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { Button, TextField, Dialog } from "@mui/material";
 
-export default function Home(){
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        username: '',
-        email: '',
-        password: ''
+export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [userNameError, setUserNameError] = useState("");
+  const [isPasswordValid, setIsPasswordValid] = useState("");
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setUserNameError("");
+    setIsPasswordValid("");
+    setFormData({
+      username: "",
+      email: "",
+      password: "",
     });
+  };
 
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
+  // callbacks
+  const onChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-    const onChange = (e:any) => {
-        const { name, value } = e.target;
-        setFormData(prevData => ({
-            ...prevData,
-            [name]: value
-        }));
-    };
+  const checkUsername = (data: any) => {
+    if (data === "") return true;
+    const pattern =
+      /^(?!.*[_.]{2})[a-zA-Z0-9](?!.*[_.]$)[a-zA-Z0-9_.]{1,48}[a-zA-Z0-9]$/;
+    return pattern.test(data);
+  };
 
-    const handleSubmit = (e:any) => {
-        e.preventDefault();
-        console.log("Form Data Submitted:", formData);
+  const validateUserName = (username: any) => {
+    if (!checkUsername(username)) {
+      setUserNameError(
+        "Username must be 3–50 characters, no consecutive or trailing dots/underscores."
+      );
+      return false;
+    } else {
+      setUserNameError("");
+      return true;
+    }
+  };
 
-        axios.post('http://localhost:8080/api/v1/users/register', formData)
-        .then(response => {
+  const ValidatePassword = (data: string) => {
+    const pattern =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{}|;:'",.<>?/`~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{}|;:'",.<>?/`~]{8,20}$/;
+
+    if (!pattern.test(data)) {
+      setIsPasswordValid(
+        "Password must be 8–20 characters with at least one uppercase, one lowercase, one number, and one special character."
+      );
+      return false;
+    } else {
+      setIsPasswordValid("");
+      return true;
+    }
+  };
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log("Form Data Submitted:", formData);
+
+    //validating data first.
+    //validateUserName(formData.username);
+    if (
+      validateUserName(formData.username) &&
+      ValidatePassword(formData.password)
+    ) {
+      axios
+        .post("http://localhost:8080/api/v1/users/register", formData)
+        .then((response) => {
           console.log(response);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
 
-        closeModal();
-        setFormData({
-            username: '',
-            email: '',
-            password: ''
-        });
-    };
+      closeModal();
+      setFormData({
+        username: "",
+        email: "",
+        password: "",
+      });
+    }
+  };
 
-    return(
-        <div>
-           <h1 className='heading ms-20 mt-10'>NOOKHUB</h1>
-           <h2 className='mt-1 ms-20'>Watch, chat, and chill with your crew—enjoy videos together in just a few clicks! </h2>
-            <button className="button ms-20 mt-10" onClick={openModal}>
-                SignUp
-            </button>
+  return (
+    <div>
+      <h1 className="heading ms-20 mt-10">NOOKHUB</h1>
+      <h2 className="mt-1 ms-20">
+        Watch, chat, and chill with your crew—enjoy videos together in just a
+        few clicks!{" "}
+      </h2>
+      <button className="button ms-20 mt-10" onClick={openModal}>
+        SignUp
+      </button>
 
-            {isModalOpen && (
-                <div className="modal-overlay" onClick={closeModal}>
-                    <div className="modal-content" onClick={e => e.stopPropagation()}>
-                        <h1 className="signUp">Sign Up</h1>
-                        <form>
-                            <div className="form-group">
-                                <span>Username</span>
-                                <input type="text" id="username" name="username" onChange={(e) => onChange(e)} required />
-                            </div>
-                            <div className="form-group">
-                                <span>Email</span>
-                                <input type="email" id="email" name="email" onChange={(e) => onChange(e)} required />
-                            </div>
-                            <div className="form-group">
-                                <span>Password</span>
-                                <input type="password" id="password" name="password" onChange={(e) => onChange(e)} required />
-                            </div>
-                            <div className="d-flex">
-                            <button type="submit" className="submit-button" onClick={handleSubmit}>Submit</button>
-                            <button className="close-button" onClick={closeModal}>Close</button>
-                            </div>
-                        </form>
-                        
-                    </div>
-                </div>
-            )}
-        </div>
-    )
+      <Dialog open={isModalOpen}>
+        <form className="FormSignUp" onSubmit={handleSubmit}>
+          <TextField
+            name="username"
+            label="Username"
+            variant="filled"
+            value={formData.username}
+            required
+            onChange={(e) => onChange(e)}
+          ></TextField>
+          {userNameError && <span className="error">{userNameError}</span>}
+          <TextField
+            name="email"
+            type="email"
+            label="Email"
+            variant="filled"
+            value={formData.email}
+            required
+            onChange={(e) => onChange(e)}
+          />
+          <TextField
+            name="password"
+            type="password"
+            label="Password"
+            variant="filled"
+            value={formData.password}
+            required
+            onChange={(e) => onChange(e)}
+          />
+          {isPasswordValid && <span className="error">{isPasswordValid}</span>}
+          <div className="performButtons">
+            <Button
+              className="close-button"
+              variant="contained"
+              onClick={closeModal}
+            >
+              Close
+            </Button>
+            <Button type="submit" variant="contained" className="submit-button">
+              Submit
+            </Button>
+          </div>
+        </form>
+      </Dialog>
+    </div>
+  );
 }

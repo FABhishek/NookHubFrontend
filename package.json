@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@mui/material": "^6.1.9",
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
     "framer-motion": "^11.3.17",
