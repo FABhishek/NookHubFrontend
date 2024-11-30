@@ -34,21 +34,18 @@ export default function Home() {
     }));
   };
 
-  const isAlphaNumeric = (data: any) => {
+  const checkUsername = (data: any) => {
     if (data === "") return true;
     const pattern =
-      /^(?!.*[_.]{2})[a-zA-Z0-9](?!.*[_.]$)[a-zA-Z0-9_.]{1,18}[a-zA-Z0-9]$/;
+      /^(?!.*[_.]{2})[a-zA-Z0-9](?!.*[_.]$)[a-zA-Z0-9_.]{1,48}[a-zA-Z0-9]$/;
     return pattern.test(data);
   };
 
   const validateUserName = (username: any) => {
-    if (username.length < 3 || username.length > 50) {
+    if (!checkUsername(username)) {
       setUserNameError(
-        "Username should be of minimum 3 letters and not more than 50."
+        "Username must be 3–50 characters, no consecutive or trailing dots/underscores."
       );
-      return false;
-    } else if (!isAlphaNumeric(username)) {
-      setUserNameError("Username should be alphanumeric.");
       return false;
     } else {
       setUserNameError("");
