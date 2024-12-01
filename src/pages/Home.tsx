@@ -1,98 +1,108 @@
 import "./Home.css";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
+import Constants from "../shared/Constants";
 import axios from "axios";
 import { Button, TextField, Dialog } from "@mui/material";
+import { useForm } from 'react-hook-form';
+import { debounce } from 'lodash';
 
 export default function Home() {
+  const baseUrl = Constants.baseUrl;
+  const pathRegister = Constants.register;
+  const pathInputAvailable = Constants.inputAvailable;
+  const usernamePattern = Constants.usernameRegex;
+  const passwordPattern = Constants.passwordRegex;
+  const emailPattern = Constants.emailRegex;
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
+  } = useForm();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-  const [userNameError, setUserNameError] = useState("");
-  const [isPasswordValid, setIsPasswordValid] = useState("");
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
     setIsModalOpen(false);
-    setUserNameError("");
-    setIsPasswordValid("");
-    setFormData({
-      username: "",
-      email: "",
-      password: "",
-    });
+    reset();
   };
 
-  // callbacks
-  const onChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  // Query Params for uniqueness check (email or username)
+  function getQueryParams(input: string, type: string) {
+    return type === 'email' ? { email: input } : { username: input };
+  }
 
-  const checkUsername = (data: any) => {
-    if (data === "") return true;
-    const pattern =
-      /^(?!.*[_.]{2})[a-zA-Z0-9](?!.*[_.]$)[a-zA-Z0-9_.]{1,48}[a-zA-Z0-9]$/;
-    return pattern.test(data);
-  };
-
-  const validateUserName = (username: any) => {
-    if (!checkUsername(username)) {
-      setUserNameError(
-        "Username must be 3–50 characters, no consecutive or trailing dots/underscores."
-      );
-      return false;
-    } else {
-      setUserNameError("");
-      return true;
-    }
-  };
-
-  const ValidatePassword = (data: string) => {
-    const pattern =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{}|;:'",.<>?/`~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{}|;:'",.<>?/`~]{8,20}$/;
-
-    if (!pattern.test(data)) {
-      setIsPasswordValid(
-        "Password must be 8–20 characters with at least one uppercase, one lowercase, one number, and one special character."
-      );
-      return false;
-    } else {
-      setIsPasswordValid("");
-      return true;
-    }
-  };
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-
-    //validating data first.
-    //validateUserName(formData.username);
-    if (
-      validateUserName(formData.username) &&
-      ValidatePassword(formData.password)
-    ) {
-      axios
-        .post("http://localhost:8080/api/v1/users/register", formData)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      closeModal();
-      setFormData({
-        username: "",
-        email: "",
-        password: "",
+  const uniqueInput = async (input: string, type: string): Promise<boolean> => {
+    try {
+      console.log('lets call');
+      const response = await axios.get(`${baseUrl}/${pathInputAvailable}`, {
+        params: getQueryParams(input, type),
       });
+      return response.data.Valid;
+    } catch (error) {
+      console.error('Error checking input:', error);
+      return false;
+    }
+  };
+
+  const debouncedCheckInput = useRef(
+    debounce(async (input: string, type: string) => {
+      const isUnique = await uniqueInput(input, type);
+      if (type === 'email') {
+        if (!isUnique) {
+          setError('email', { type: 'manual', message: 'Email already exists!' });
+        } else {
+          clearErrors('email');
+        }
+      } else {
+        if (!isUnique) {
+          setError('username', { type: 'manual', message: 'Username already exists!' });
+        } else {
+          clearErrors('username');
+        }
+      }
+    }, 1000)
+  ).current;
+
+
+  const handleInputChange = (e: any) => {
+    const value = e.target.value;
+    const name = e.target.name;
+    if (name === 'email') {
+      if(value.length === 0) {
+        clearErrors('email');
+      }
+      else if (value.match(emailPattern)) {
+        debouncedCheckInput(value, name);
+      } 
+      else {
+        setError('email', { type: 'manual', message: Constants.invalidEmail });
+      }
+    } else if (name === 'username') {
+      if(value.length === 0) {
+        clearErrors('username');
+      }
+      else if (value.length >= 3) {
+        debouncedCheckInput(value, name);
+      } else {
+        setError('username', { type: 'manual', message: Constants.errorUsername });
+      }
+    }
+  };
+
+  // Form submission logic
+  const onSubmit = async (data: any) => {
+    console.log('Form Data Submitted:', data);
+    try {
+      const response = await axios.post(`${baseUrl}/${pathRegister}`, data);
+      console.log(response);
+      closeModal();
+    } catch (error) {
+      console.error('Error submitting the form:', error);
     }
   };
 
@@ -108,35 +118,45 @@ export default function Home() {
       </button>
 
       <Dialog open={isModalOpen}>
-        <form className="FormSignUp" onSubmit={handleSubmit}>
+        <form className="FormSignUp" onSubmit={handleSubmit(onSubmit)}>
           <TextField
-            name="username"
+            {...register('username', {
+              required: true,
+              minLength: { value: 3, message: Constants.errorUsername },
+              pattern: { value: usernamePattern, message: Constants.errorUsername },
+            })}
             label="Username"
             variant="filled"
-            value={formData.username}
-            required
-            onChange={(e) => onChange(e)}
-          ></TextField>
-          {userNameError && <span className="error">{userNameError}</span>}
+            onChange={handleInputChange}
+            error={!!errors.username}
+            helperText={errors.username?.message as string}
+          />
+
           <TextField
-            name="email"
+            {...register('email', {
+              required: true,
+              pattern: { value: emailPattern, message: Constants.invalidEmail },
+            })}
             type="email"
             label="Email"
             variant="filled"
-            value={formData.email}
-            required
-            onChange={(e) => onChange(e)}
+            onChange={handleInputChange}
+            error={!!errors.email}
+            helperText={errors.email?.message as string}
           />
+
           <TextField
-            name="password"
-            type="password"
+            {...register('password', {
+              required: true,
+              pattern: { value: passwordPattern, message: Constants.errorPassword },
+            })}
             label="Password"
+            type="password"
             variant="filled"
-            value={formData.password}
-            required
-            onChange={(e) => onChange(e)}
+            error={!!errors.password}
+            helperText={errors.password?.message as string}
           />
-          {isPasswordValid && <span className="error">{isPasswordValid}</span>}
+
           <div className="performButtons">
             <Button
               className="close-button"
@@ -145,7 +165,12 @@ export default function Home() {
             >
               Close
             </Button>
-            <Button type="submit" variant="contained" className="submit-button">
+            <Button
+              type="submit"
+              variant="contained"
+              className="submit-button"
+              disabled={isSubmitting || Object.keys(errors).length > 0}
+            >
               Submit
             </Button>
           </div>
