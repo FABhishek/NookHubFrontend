@@ -1,0 +1,50 @@
+.outer-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    margin-top: 3%;
+  }
+
+  .heading {
+    color: black;
+    font-size: xx-large;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .form-wrapper {
+    background: #fdf7e3; /* Cream white background */
+    padding: 50px;
+    padding-top: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .FormSignUp {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Spacing between inputs */
+  }
+  
+  .performButtons {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .submit-button {
+    width: 100%;
+  }
+
+  .loginCheck {
+    text-align: center;
+    color: black;
+
+    .login {
+      color: blue;
+      cursor: pointer;
+    }
+  }
