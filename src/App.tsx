@@ -4,13 +4,17 @@ import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Signup from "./pages/SignUp-Login/Signup";
 import LogIn from "./pages/SignUp-Login/Login";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 
 function App() {
+
+  const location = useLocation(); // returns the current url we are at
+
+  const isDashboard = location.pathname === "/dashboard";
+
   return (
-    <Router>
       <div>
-        <Header />
+         {!isDashboard && <Header />}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -19,7 +23,6 @@ function App() {
           <Route path="/login" element={<LogIn />} />
         </Routes>
       </div>
-    </Router>
   );
 }
 

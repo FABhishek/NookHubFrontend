@@ -40,6 +40,7 @@ export default function LogIn() {
         headers: {
           "Content-Type": "application/json",
         },
+         withCredentials: true
       });
       setValue("password", null);
       setValue("email", null);
@@ -106,7 +107,6 @@ export default function LogIn() {
             <div className="loginCheck">
               Don't have an account?
               <span className="login" onClick={signUpHandle}>
-                {" "}
                 Sign Up
               </span>
             </div>
