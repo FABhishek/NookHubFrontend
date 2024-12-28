@@ -22,7 +22,6 @@ export default function Signup() {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
     setError,
     setValue,
@@ -45,7 +44,6 @@ export default function Signup() {
 
   const uniqueInput = async (input: string, type: string): Promise<boolean> => {
     try {
-      console.log("lets call");
       const response = await axios.get(`${baseUrl}/${pathInputAvailable}`, {
         params: getQueryParams(input, type),
       });
