@@ -15,6 +15,7 @@ const Constants = {
   errorPassword:
     "Password must be 8–20 characters with at least one uppercase, one lowercase, one number, and one special character.",
   invalidEmail: "Please provide a valid mail address",
+  statusOk : 200,
 };
 
 export default Constants;
