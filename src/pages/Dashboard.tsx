@@ -5,11 +5,18 @@ import Friendlist from "../components/Friendlist";
 import Rooms from "../components/Rooms";
 import Usercontrol from "../components/Usercontrol";
 import Utilityboard from "../components/utilityboard";
-
-const baseUrl = Constants.baseUrl;
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+  interface User {
+    userId?: string; // Adjust fields based on your data structure
+    username?: string;
+    message?: string;
+    // Add other fields as necessary
+  }
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
+  const baseUrl = Constants.baseUrl;
   //   async function handleClick(){
   //     try {
   //       const response = await axios.get(`${baseUrl}/api/v1/dashboard/friends/fetchfriends`, {
@@ -21,6 +28,21 @@ export default function Dashboard() {
   //     console.error("Error submitting the form:", error);
   //   }
   // }
+
+  useEffect(() => {
+    const data = localStorage.getItem("userData");
+    if (data) {
+      try {
+        setCurrentUser(JSON.parse(data));
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+        setCurrentUser(null);
+      }
+    } else {
+      setCurrentUser(null);
+    }
+  }, []);
+
   return (
     <div className="h-screen bg-black flex">
       <div className="w-[12vw] bg-white m-4 rounded-lg flex flex-col">
@@ -32,7 +54,7 @@ export default function Dashboard() {
       </div>
       <div className="w-[20vw] bg-red-600 m-4 rounded-lg flex flex-col">
         <div className="h-[20vh] bg-black m-2 flex justify-between">
-          <UserSearch />
+          <UserSearch currentUser={currentUser} />
         </div>
         <div className="h-[75vh] bg-slate-400 m-2 flex rounded-lg">
           <Friendlist />

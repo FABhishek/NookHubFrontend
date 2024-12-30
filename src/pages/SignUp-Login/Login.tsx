@@ -33,22 +33,19 @@ export default function LogIn() {
 
   // Form submission logic
   const onSubmit = async (data: any) => {
-    console.log("Form Data Submitted:", data);
-
     try {
       const response = await axios.post(`${baseUrl}/${pathLogin}`, data, {
         headers: {
           "Content-Type": "application/json",
         },
-         withCredentials: true
+        withCredentials: true,
       });
+      localStorage.setItem("userData", JSON.stringify(response.data));
       setValue("password", null);
       setValue("email", null);
       navigate("/dashboard");
-      console.log(response);
     } catch (error) {
       setLoginError(error?.response?.data?.message);
-      console.error("Error submitting the form:", error);
     }
   };
 

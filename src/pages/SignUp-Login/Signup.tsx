@@ -113,7 +113,6 @@ export default function Signup() {
       setValue("password", null);
       setValue("username", null);
       navigate("/dashboard");
-      console.log(response);
     } catch (error) {
       console.error("Error submitting the form:", error);
     }
