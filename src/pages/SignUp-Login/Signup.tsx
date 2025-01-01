@@ -108,7 +108,7 @@ export default function Signup() {
   const onSubmit = async (data: any) => {
     console.log("Form Data Submitted:", data);
     try {
-      const response = await axios.post(`${baseUrl}/${pathRegister}`, data);
+      await axios.post(`${baseUrl}/${pathRegister}`, data);
       setValue("email", null);
       setValue("password", null);
       setValue("username", null);
@@ -197,7 +197,6 @@ export default function Signup() {
             <div className="loginCheck">
               Already have an account?
               <span className="login" onClick={loginHandle}>
-                {" "}
                 Log In
               </span>
             </div>
