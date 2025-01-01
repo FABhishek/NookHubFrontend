@@ -99,7 +99,7 @@ export default function LogIn() {
               </Button>
             </div>
             {loginError && (
-              <p style={{ color: "red", marginTop: "8px" }}>{loginError}</p>
+              <p className="text-red-500 text-sm">{loginError}</p>
             )}
             <div className="loginCheck">
               Don't have an account?

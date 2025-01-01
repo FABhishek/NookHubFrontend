@@ -4,6 +4,8 @@ import { faUserPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Constants from "../shared/Constants";
 import DefaultProfilePhoto from "../images/default-avatar-profile-icon-social-media-user-image-gray-avatar-icon-blank-profile-silhouette-vector-illustration_561158-3407.avif"
+import { TextField } from "@mui/material";
+import { useForm } from "react-hook-form";
 
 interface foundUserSchema {
     friendid?: number;
@@ -26,6 +28,14 @@ export default function UserSearch({ currentUser }: UserSearchProps) {
     const [userFound, setUserFound] = useState<foundUserSchema | null>(null);
     const [friendRquest, setFriendRequest] = useState(false);
 
+    const {
+        register,
+      } = useForm({
+        defaultValues: {
+          usersearch: null
+        },
+      });
+     
     const handleInputChange = (e: any) => {
         setSearchError("");
         setUserFound(null);
@@ -34,17 +44,20 @@ export default function UserSearch({ currentUser }: UserSearchProps) {
 
     const searchUser = async () => {
         setUserFound(null);
-        const senderId = currentUser.userId;
         try {
             const response = await axios.get(`${baseUrl}/${pathSearch}`, {
-                params: { friendname: searchedUser, userid: senderId },
+                params: { friendname: searchedUser },
                 withCredentials: true,
             });
-            setUserFound(response?.data?.result);
+
+            if(response.status == Constants.statusOk)
+                setUserFound(response?.data?.result)
+            else setSearchError(`No user with name: ${searchedUser} found!!`);
 
         } catch (error) {
-            setSearchError("No user found!!");
+            console.log(error)
         }
+        
         console.log("check", userFound);
     };
 
@@ -78,10 +91,16 @@ export default function UserSearch({ currentUser }: UserSearchProps) {
         <>
             <div>
                 <div className="searchBar m-1 flex">
-                    <input
-                        className="w-full bg-white m-2 h-8 text-black rounded-lg px-2"
+                    <TextField {...register("usersearch")}
+                        variant='filled'
                         onChange={handleInputChange}
-                    ></input>
+                        InputProps={{
+                            disableUnderline: true,
+                            style: 
+                            { height: '35px', background: 'white', borderRadius: '8px', margin: '8px'},
+                            inputProps: { maxLength: 20 },
+                          }}
+                    />
                     <button
                         className="bg-purple-500 m-2 h-8 text-white rounded-md py-2 px-4 text-sm"
                         onClick={searchUser}
@@ -163,7 +182,7 @@ export default function UserSearch({ currentUser }: UserSearchProps) {
                         )}
                     </div>
                 ) : (
-                    <div className="m-5">{searchError}</div>
+                    <div className="m-2 p-2 text-sm flex">{searchError}</div>
                 )}
             </div>
         </>
