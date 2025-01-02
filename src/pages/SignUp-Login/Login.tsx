@@ -98,12 +98,11 @@ export default function LogIn() {
                 Log In
               </Button>
             </div>
-            {loginError && (
-              <p className="text-red-500 text-sm">{loginError}</p>
-            )}
+            {loginError && <p className="text-red-500 text-sm">{loginError}</p>}
             <div className="loginCheck">
               Don't have an account?
               <span className="login" onClick={signUpHandle}>
+                {" "}
                 Sign Up
               </span>
             </div>

@@ -31,6 +31,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const data = localStorage.getItem("userData");
+    console.log("check", data);
     if (data) {
       try {
         setCurrentUser(JSON.parse(data));
