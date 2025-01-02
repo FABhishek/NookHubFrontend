@@ -5,6 +5,7 @@ const Constants = {
   login: "api/v1/users/login",
   searchUser: "api/v1/dashboard/friends/searchuser",
   addFriend: "api/v1/dashboard/friends/requestsent",
+  removeFriend: "api/v1/dashboard/friends/requeststatus",
   passwordRegex:
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{}|;:'",.<>?/`~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{}|;:'",.<>?/`~]{8,20}$/,
   usernameRegex:
@@ -15,7 +16,8 @@ const Constants = {
   errorPassword:
     "Password must be 8–20 characters with at least one uppercase, one lowercase, one number, and one special character.",
   invalidEmail: "Please provide a valid mail address",
-  statusOk : 200,
+  statusOk: 200,
+  unauthorized: 401,
 };
 
 export default Constants;
