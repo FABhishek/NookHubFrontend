@@ -7,6 +7,7 @@ import DefaultProfilePhoto from "../images/default-avatar-profile-icon-social-me
 import { TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 
 interface foundUserSchema {
   friendid?: number;
@@ -55,8 +56,7 @@ export default function UserSearch({ currentUser }: UserSearchProps) {
         setUserFound(response?.data?.result);
       else setSearchError(`No user with name: ${searchedUser} found!!`);
     } catch (error) {
-      console.log(error);
-      if (error) {
+      if (isAxiosError(error)) {
         if (error?.response?.status === Constants.unauthorized) {
           navigate("/login");
         }
@@ -85,7 +85,7 @@ export default function UserSearch({ currentUser }: UserSearchProps) {
       if (addFriend.status == Constants.statusOk)
         setFriendRequest(!friendRquest);
     } catch (error) {
-      if (error) {
+      if (isAxiosError(error)) {
         if (error?.response?.status === Constants.unauthorized) {
           navigate("/login");
         }
@@ -107,7 +107,7 @@ export default function UserSearch({ currentUser }: UserSearchProps) {
       if (unFriend.status === Constants.statusOk)
         setFriendRequest(!friendRquest);
     } catch (error) {
-      if (error) {
+      if (isAxiosError(error)) {
         if (error?.response?.status === Constants.unauthorized) {
           navigate("/login");
         }

@@ -2,7 +2,7 @@ import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import Constants from "../../shared/Constants";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import { useState } from "react";
 import "./Signup-login.css";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -45,7 +45,7 @@ export default function LogIn() {
       setValue("email", null);
       navigate("/dashboard");
     } catch (error) {
-      setLoginError(error?.response?.data?.message);
+      if (isAxiosError(error)) setLoginError(error?.response?.data?.message);
     }
   };
 

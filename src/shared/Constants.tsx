@@ -5,6 +5,7 @@ const Constants = {
   login: "api/v1/users/login",
   searchUser: "api/v1/dashboard/friends/searchuser",
   addFriend: "api/v1/dashboard/friends/requestsent",
+  fetchFriends: "api/v1/dashboard/friends/fetchfriends",
   removeFriend: "api/v1/dashboard/friends/requeststatus",
   passwordRegex:
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{}|;:'",.<>?/`~])[A-Za-z\d!@#$%^&*()_+\-=\[\]{}|;:'",.<>?/`~]{8,20}$/,
